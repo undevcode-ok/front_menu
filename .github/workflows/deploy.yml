@@ -35,7 +35,7 @@ jobs:
       - name: Build project
         env:
           # ✅ ESTA LÍNEA ES LA CLAVE: vincula el Secret con el proceso de Build
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
         run: |
           if [ "${GITHUB_REF_NAME}" = "dev" ]; then
             echo "Building for development..."
