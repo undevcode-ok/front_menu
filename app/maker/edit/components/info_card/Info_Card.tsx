@@ -42,10 +42,8 @@ export const InfoCard = ({ menuData }: MenuCardProps) => {
             <p className="text-xl font-semibold uppercase tracking-wider opacity-90 mb-1">
               Información del menú
             </p>
-             <h2 className="text-4xl font-extrabold tracking-tight 
-        overflow-hidden text-ellipsis whitespace-nowrap 
-        sm:overflow-visible sm:text-ellipsis sm:whitespace-normal
-        w-full max-w-75">
+             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight 
+      leading-tight line-clamp-3 wrap-break-word">
         {menuData?.title}
       </h2>
           </div>
