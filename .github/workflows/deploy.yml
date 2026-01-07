@@ -1,0 +1,70 @@
+name: Build and Deploy Menu Maker
+
+on:
+  push:
+    branches:
+      - main
+      # - dev  <-- Descomenta si quieres deployar dev también
+
+env:
+  NODE_VERSION: 20
+  REMOTE_USER: user_toppingfly
+  REMOTE_HOST: 172.238.203.241
+  REMOTE_DIR: /home/user_toppingfly/apps/front_toppingfly/
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1️⃣ Checkout del repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2️⃣ Instalar Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      # 3️⃣ Instalar dependencias
+      - name: Install dependencies
+        run: npm ci
+
+      # 4️⃣ Build según la rama
+      - name: Build project
+        env:
+          # ✅ ESTA LÍNEA ES LA CLAVE: vincula el Secret con el proceso de Build
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+        run: |
+          if [ "${GITHUB_REF_NAME}" = "dev" ]; then
+            echo "Building for development..."
+            NODE_ENV=development npm run build:dev
+          else
+            echo "Building for production..."
+            NODE_ENV=production npm run build:prod
+          fi
+
+      # 5️⃣ Configurar SSH
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known hosts
+        run: ssh-keyscan -H ${{ env.REMOTE_HOST }} >> ~/.ssh/known_hosts
+
+      # 6️⃣ Deploy con rsync
+      # IMPORTANTE: --exclude 'prod.env' evita que se borre tu archivo de config del servidor
+      - name: Deploy via rsync
+        run: |
+          echo "Deploying to server..."
+          rsync -avz --delete --exclude 'prod.env' .next ${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }}:${{ env.REMOTE_DIR }}
+          rsync -avz --delete --exclude 'prod.env' public ${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }}:${{ env.REMOTE_DIR }}
+          rsync -avz --delete --exclude 'prod.env' package.json package-lock.json next.config.ts ecosystem.config.js ${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }}:${{ env.REMOTE_DIR }}
+
+      # 7️⃣ Instalar dependencias prod y Reiniciar PM2
+      - name: Restart PM2
+        run: |
+          echo "Reloading application..."
+          ssh ${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }} "cd ${{ env.REMOTE_DIR }} && npm install --production && pm2 startOrReload ecosystem.config.js --update-env"
