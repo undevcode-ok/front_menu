@@ -26,19 +26,24 @@ export const CategoryTitle: React.FC<CategoryTitleProps> = ({
   onFocus,
   onBlur,
   isSubmitting,
-   isDragging,
+  isDragging,
 }) => {
 
-   // Estilo del cursor
-  const [isEditing, setIsEditing] = useState(false); // Estado para saber si estamos editando
+  // Estado para saber si estamos editando
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleClick = () => {
     setIsEditing(true);
   };
 
+  const handleFocus = () => {
+    setIsEditing(true);
+    onFocus();
+  };
+
   const handleBlur = () => {
     setIsEditing(false);
-    onBlur(); // Llamar a la función onBlur pasada como prop
+    onBlur();
   };
 
   // Estilo del cursor
@@ -47,14 +52,26 @@ export const CategoryTitle: React.FC<CategoryTitleProps> = ({
   return (
     <div className="flex flex-col w-full">
       <div className="flex items-center gap-2 w-full">
-        {/* Input editable - NO detiene propagación, el sensor maneja todo */}
+        {/* Input editable con diseño moderno */}
         <input
           type="text"
           {...register("title")}
-          onFocus={onFocus}
+          onFocus={handleFocus}
           onBlur={handleBlur}
           onClick={handleClick}
-          className={`w-full min-w-0 p-1 font-semibold text-slate-700 bg-transparent border-b transition-colors truncate focus:outline-none border-transparent focus:border-orange-300`}
+          className={`
+            w-full min-w-0 px-2 py-1.5 
+            font-semibold text-slate-700 
+            rounded-lg
+            transition-all duration-200
+            truncate focus:outline-none
+            ${isDragging 
+              ? 'bg-transparent border-transparent' 
+              : isEditing
+                ? 'bg-orange-50 border-2 border-orange-400 shadow-sm'
+                : 'bg-transparent border-2 border-transparent hover:bg-slate-50'
+            }
+          `}
           maxLength={50}
           placeholder="Nombre de categoría"
           disabled={isSubmitting}

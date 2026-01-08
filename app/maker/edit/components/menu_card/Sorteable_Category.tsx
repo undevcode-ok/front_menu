@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, ChevronUp, ChevronDown, Trash2 } from "lucide-react";
+import { GripVertical, Trash2 } from "lucide-react";
 import { Categories } from "@/app/home/types/menu";
 import { CategoryTitle } from "./Category_Title";
 import { Button } from "@/common/components/atoms/button";
@@ -28,6 +28,8 @@ export const SortableCategory: React.FC<SortableCategoryProps> = ({
   onCategoryChange,
   sensors,
 }) => {
+  const dragStarted = useRef(false);
+
   const {
     attributes,
     listeners,
@@ -35,7 +37,9 @@ export const SortableCategory: React.FC<SortableCategoryProps> = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: category.id });
+  } = useSortable({ 
+    id: category.id,
+  });
 
   // Hook de edición
   const {
@@ -67,6 +71,14 @@ export const SortableCategory: React.FC<SortableCategoryProps> = ({
     setExpandedCategoryId(category.id);
   };
 
+  // Toggle de expandir/colapsar
+  const toggleExpanded = () => {
+    if (!dragStarted.current) {
+      setExpandedCategoryId(expandedCategoryId === category.id ? null : category.id);
+    }
+    dragStarted.current = false;
+  };
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -87,6 +99,13 @@ export const SortableCategory: React.FC<SortableCategoryProps> = ({
           }}
           {...attributes}
           {...listeners}
+          onPointerDown={() => {
+            dragStarted.current = false;
+          }}
+          onDragStart={() => {
+            dragStarted.current = true;
+          }}
+          onClick={toggleExpanded}
         >
           {/* Ícono de grip - solo visual */}
           <div className="mr-2 text-slate-400 pointer-events-none">
@@ -103,10 +122,11 @@ export const SortableCategory: React.FC<SortableCategoryProps> = ({
               onFocus={handleFocus}
               onBlur={handleBlur}
               isSubmitting={isSubmitting}
+              isDragging={isDragging}
             />
           </div>
 
-          {/* Botones de acción - SOLO ellos detienen propagación */}
+          {/* Botón de acción - SOLO él detiene propagación */}
           <div 
             className="flex space-x-2 items-center min-w-max"
             onPointerDown={(e) => e.stopPropagation()}
@@ -135,25 +155,6 @@ export const SortableCategory: React.FC<SortableCategoryProps> = ({
                 isDeleting={isDeleting}
               />
             </Dialog>
-
-            {/* Botón expandir/colapsar */}
-            <button
-              type="button"
-              onClick={() =>
-                setExpandedCategoryId(isExpanded ? null : category.id)
-              }
-              className={`h-8 w-8 p-0 rounded-lg transition-all duration-200 flex items-center justify-center ${
-                isExpanded
-                  ? "bg-orange-50 text-orange-500 shadow-sm"
-                  : "text-slate-500 hover:bg-slate-100"
-              }`}
-            >
-              {isExpanded ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-            </button>
           </div>
         </div>
       </form>
