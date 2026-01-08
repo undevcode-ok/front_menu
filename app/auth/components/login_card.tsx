@@ -59,7 +59,7 @@ export const LoginCard = () => {
               <InstagramIcon />
             </a>
             <a
-              href="https://www.tiktok.com/@flexitaim"
+              href="https://www.tiktok.com/@toppyngfly"
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-full bg-black flex items-center justify-center hover:scale-110 transition-transform"

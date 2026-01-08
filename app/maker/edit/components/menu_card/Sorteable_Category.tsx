@@ -58,10 +58,13 @@ export const SortableCategory: React.FC<SortableCategoryProps> = ({
     onSuccess: onCategoryChange,
   });
 
-  // ========== FUNCIÓN DE ELIMINACIÓN ==========
   const handleDeleteClick = async () => {
-    // Ejecutar eliminación
     await deleteCategory(category.id);
+  };
+
+  // Función para asegurar que esta categoría esté expandida
+  const ensureCategoryExpanded = () => {
+    setExpandedCategoryId(category.id);
   };
 
   const style = {
@@ -76,30 +79,40 @@ export const SortableCategory: React.FC<SortableCategoryProps> = ({
   return (
     <div ref={setNodeRef} style={style}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex items-center justify-between p-3 bg-white border border-slate-100 rounded-lg shadow-sm overflow-hidden w-full">
-          {/* Drag Handle */}
-          <div
-            {...attributes}
-            {...listeners}
-            className="cursor-grab active:cursor-grabbing touch-none mr-2 text-slate-400 hover:text-slate-600 transition-colors"
-          >
+        <div 
+          className="flex items-center justify-between p-3 bg-white border border-slate-100 rounded-lg shadow-sm overflow-hidden w-full"
+          style={{ 
+            touchAction: 'none',
+            cursor: isDragging ? 'grabbing' : 'grab'
+          }}
+          {...attributes}
+          {...listeners}
+        >
+          {/* Ícono de grip - solo visual */}
+          <div className="mr-2 text-slate-400 pointer-events-none">
             <GripVertical className="w-5 h-5" />
           </div>
 
-          {/* Título editable */}
-          <CategoryTitle
-            register={register}
-            errors={errors}
-            showSaveButton={showSaveButton}
-            onSave={handleSubmit(onSubmit)}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            isSubmitting={isSubmitting}
-          />
+          {/* Título editable - NO detiene propagación */}
+          <div className="flex-1">
+            <CategoryTitle
+              register={register}
+              errors={errors}
+              showSaveButton={showSaveButton}
+              onSave={handleSubmit(onSubmit)}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              isSubmitting={isSubmitting}
+            />
+          </div>
 
-          {/* Botones de acción */}
-          <div className="flex space-x-2 items-center min-w-max">
-            {/* ========== BOTÓN ELIMINAR CON DIALOG ========== */}
+          {/* Botones de acción - SOLO ellos detienen propagación */}
+          <div 
+            className="flex space-x-2 items-center min-w-max"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Botón Eliminar */}
             <Dialog>
               <DialogTrigger asChild>
                 <Button
@@ -145,7 +158,7 @@ export const SortableCategory: React.FC<SortableCategoryProps> = ({
         </div>
       </form>
 
-      {/* Contenido desplegable - Renderizado condicional simple */}
+      {/* Contenido desplegable */}
       {isExpanded && (
         <div className="mt-2">
           <ItemList
@@ -153,6 +166,7 @@ export const SortableCategory: React.FC<SortableCategoryProps> = ({
             categoryId={category.id}
             sensors={sensors}
             onItemChange={onCategoryChange}
+            ensureCategoryExpanded={ensureCategoryExpanded}
           />
         </div>
       )}
