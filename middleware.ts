@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
   const idParam = request.nextUrl.searchParams.get("id");
 
   // Definir rutas públicas (no requieren token)
-  const publicRoutes = ["/auth", "/forgotpassword"];
+  const publicRoutes = ["/" ,"/auth", "/forgotpassword"];
   // Definir rutas privadas (requieren token)
   const privateRoutes = ["/home", "/user/create/account"];
   // Definir rutas específicas de cambio de contraseña (requieren token)
