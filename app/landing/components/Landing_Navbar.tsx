@@ -7,9 +7,14 @@ import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { Menubar, MenubarMenu } from "@/common/components/organism/menubar";
 import { WHATSAPP_CONFIG } from "../utils/landing_constants";
+import { useWhatsApp } from "../hooks/use_WhatsApp";
 
 export function LandingNavbar() {
   const [scrolled, setScrolled] = useState(false);
+  const { openWhatsApp } = useWhatsApp({
+    phoneNumber: WHATSAPP_CONFIG.phoneNumber,
+    defaultMessage: WHATSAPP_CONFIG.defaultMessage,
+  });
 
   useEffect(() => {
     const onScroll = () => {
@@ -19,12 +24,6 @@ export function LandingNavbar() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  const handleWhatsAppClick = () => {
-    const message = encodeURIComponent(WHATSAPP_CONFIG.defaultMessage);
-    const whatsappUrl = `https://wa.me/${WHATSAPP_CONFIG.phoneNumber}?text=${message}`;
-    window.open(whatsappUrl, "_blank");
-  };
 
   return (
     <motion.nav
@@ -40,17 +39,18 @@ export function LandingNavbar() {
         }
       `}
     >
-      <div className="w-full px-6 lg:px-12">
-        <Menubar className="max-w-7xl mx-auto px-6 lg:px-12 w-full justify-between border-none bg-transparent">
+      <div className="w-full px-0 sm:px-0 lg:px-12">
+        <Menubar className="w-full mx-0 border-0 flex items-center justify-between py-4">
           {/* Logo */}
           <MenubarMenu>
-            <div className="flex items-center">
+            <div className="flex items-center ml-0 flex-shrink-0">
               <Image
                 src="/toppingfly.webp"
                 alt="ToppingFly Logo"
                 width={200}
                 height={50}
                 priority
+                className="object-contain"
               />
             </div>
           </MenubarMenu>
@@ -79,26 +79,26 @@ export function LandingNavbar() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-0 sm:gap-3">
             {/* CTA Button */}
             <MenubarMenu>
               <a
                 href="/auth"
                 className=" hover:text-orange-600   px-7 py-3  text-sm transition-all flex items-center gap-2 text-orange-400 font-medium"
               >
-                Ingresar 
+                Ingresar
               </a>
             </MenubarMenu>
             {/* WhatsApp Button */}
-             <MenubarMenu>
+            <MenubarMenu>
               <button
-              onClick={handleWhatsAppClick}
-              className="bg-orange-500 hover:bg-orange-600 border border-orange-600 px-7 py-3 rounded-lg text-sm transition-all flex items-center gap-2 text-white font-medium"
-              aria-label="Contactar por WhatsApp"
-            >
-              
-              <span className="hidden md:inline">Solicitar registro</span>
-            </button>
+                onClick={() => openWhatsApp()}
+                className="bg-orange-500 hover:bg-orange-600 border border-orange-600 px-6 sm:px-7 py-2 sm:py-3 rounded-lg text-sm transition-all flex items-center gap-2 text-white font-medium"
+                aria-label="Contactar por WhatsApp"
+              >
+                <span className="hidden sm:inline">Solicitar registro</span>
+                <span className="sm:hidden">Registro</span>
+              </button>
             </MenubarMenu>
           </div>
         </Menubar>

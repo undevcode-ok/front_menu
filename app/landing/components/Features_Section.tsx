@@ -54,7 +54,7 @@ export const FeaturesSection = () => {
   };
 
   return (
-    <section className="max-w-6xl mx-auto px-4 py-16">
+    <section id="features" className="max-w-6xl mx-auto px-4 py-16 scroll-mt-8">
       <motion.div 
         className="text-center mb-12"
         initial={{ opacity: 0, y: -20 }}

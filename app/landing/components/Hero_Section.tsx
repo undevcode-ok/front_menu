@@ -6,7 +6,8 @@ import { InfoCardGrid } from "./Info_Card_Grid";
 
 export function HeroSection() {
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-32 pb-20">
+    <section id="qr" className="min-h-screen flex flex-col items-center justify-center px-6 pt-32 pb-20"
+    style={{ scrollMarginTop: '-50px' }}>
       <motion.h1
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -22,13 +23,20 @@ export function HeroSection() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="text-base md:text-xl text-black/60 text-center max-w-3xl mb-20 leading-relaxed"
+        className="text-base md:text-xl text-black/60 text-center max-w-3xl mb-12 md:mb-20 leading-relaxed"
       >
         Una herramienta fácil de usar para crear, organizar y actualizar menús
         en línea.
       </motion.p>
 
-      <div className="relative w-full max-w-7xl mx-auto">
+      {/* Layout para Mobile: Teléfono arriba, cards abajo */}
+      <div className="w-full max-w-7xl mx-auto lg:hidden flex flex-col items-center gap-8">
+        <PhoneShowcase />
+        <InfoCardGrid />
+      </div>
+
+      {/* Layout para Desktop: Cards alrededor del teléfono */}
+      <div className="relative w-full max-w-7xl mx-auto hidden lg:block">
         <InfoCardGrid />
         <PhoneShowcase />
       </div>
