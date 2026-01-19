@@ -27,7 +27,7 @@ export function PhoneShowcase() {
               muted
               playsInline
               className="w-full h-full object-cover"
-              poster={VIDEO_CONFIG.posterImage}
+              
             >
               <source src={VIDEO_CONFIG.videoUrl} type="video/mp4" />
               {/* Fallback si el video no carga */}

@@ -17,10 +17,9 @@ export function InfoCardGrid() {
           className={`hidden lg:block absolute ${card.position}`}
         >
           <InfoCard
-            logoSrc={card.logoSrc}
-            logoAlt={card.logoAlt}
+            titleImageSrc={card.titleImageSrc}
+            titleImageAlt={card.titleImageAlt}
             delay={card.animationDelay}
-            logoSize={card.logoSize}
           />
         </motion.div>
       ))}
@@ -36,10 +35,9 @@ export function InfoCardGrid() {
             className="w-full max-w-[280px] mx-auto"
           >
             <InfoCard
-              logoSrc={card.logoSrc}
-              logoAlt={card.logoAlt}
+              titleImageSrc={card.titleImageSrc}
+              titleImageAlt={card.titleImageAlt}
               delay={card.animationDelay + 0.7}
-              logoSize={card.logoSize}
             />
           </motion.div>
         ))}

@@ -4,17 +4,15 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 
 interface InfoCardProps {
-  logoSrc: string;
-  logoAlt: string;
+  titleImageSrc: string;
+  titleImageAlt: string;
   delay?: number;
-  logoSize?: number;
 }
 
 export function InfoCard({ 
-  logoSrc,
-  logoAlt,
+  titleImageSrc,
+  titleImageAlt,
   delay = 0,
-  logoSize = 80
 }: InfoCardProps) {
   return (
     <motion.div
@@ -28,28 +26,30 @@ export function InfoCard({
       }}
       className="text-center bg-white/90 backdrop-blur-xl border border-gray-200 rounded-xl p-6 min-w-[240px] max-w-[280px] shadow-lg"
     >
-      {/* Logo Image - Circular */}
-      <div className="w-full mb-6 flex items-center justify-center">
-        <div className="relative rounded-full overflow-hidden shadow-md" style={{ width: logoSize, height: logoSize }}>
-          <Image
-            src={logoSrc}
-            alt={logoAlt}
-            width={logoSize}
-            height={logoSize}
-            className="object-cover"
-          />
-        </div>
-      </div>
+      {/* Title Image */}
+      <div className="w-full mb-4 flex items-center justify-center overflow-hidden relative">
+  <img
+    src={titleImageSrc}
+    alt={titleImageAlt}
+    className="object-cover w-full h-auto max-h-32"
+    style={{ objectPosition: 'center' }}
+    onError={(e) => {
+      console.error(`Error cargando imagen: ${titleImageSrc}`);
+      e.currentTarget.style.display = 'none';
+    }}
+  />
+</div>
 
       {/* QR Code */}
       <div className="w-32 h-32 mx-auto bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center border-2 border-gray-300 hover:scale-105 transition-transform">
         <div className="w-full h-full flex items-center justify-center">
-          <Image
+          <img
             src="/qr/QR_placeholder.png"
             alt="QR Placeholder"
-            width={128}
-            height={128}
-            className="object-contain"
+            className="object-contain w-full h-full"
+            onError={(e) => {
+              console.error('Error cargando QR placeholder');
+            }}
           />
         </div>
       </div>      

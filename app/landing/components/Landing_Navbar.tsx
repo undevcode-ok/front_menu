@@ -29,18 +29,12 @@ export function LandingNavbar() {
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`
-        fixed top-0 left-0 right-0 z-50 w-full
-        transition-all duration-300
-        ${
-          scrolled
-            ? "bg-white/70 backdrop-blur-xl shadow-sm"
-            : "bg-white/90 backdrop-blur-md"
-        }
-      `}
+      className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${
+        scrolled ? "bg-white backdrop-blur-xl shadow-sm" : "bg-white backdrop-blur-md"
+      }`}
     >
-      <div className="w-full px-0 sm:px-0 lg:px-12">
-        <Menubar className="w-full mx-0 border-0 flex items-center justify-between py-4">
+      <div className="w-full px-0 sm:px-0 lg:px-12 ">
+        <Menubar className="flex items-center justify-between py-4 px-0 sm:max-w-375 sm:mx-auto sm:py-3 border-none shadow-none">
           {/* Logo */}
           <MenubarMenu>
             <div className="flex items-center ml-0 flex-shrink-0">
@@ -79,7 +73,7 @@ export function LandingNavbar() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-0 sm:gap-3">
+          <div className="flex items-center gap-0 sm:gap-3 pr-4 sm:pr-0">
             {/* CTA Button */}
             <MenubarMenu>
               <a
