@@ -46,6 +46,26 @@ export const CategoryTitle: React.FC<CategoryTitleProps> = ({
     onBlur();
   };
 
+  // 👇 NUEVO: Prevenir que dnd-kit capture Space/Enter cuando estamos editando
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Si estamos editando, NO dejar que dnd-kit maneje las teclas
+    if (isEditing) {
+      // Permitir Space normalmente
+      if (e.key === ' ') {
+        e.stopPropagation(); // 👈 Evita que dnd-kit capture el evento
+        return;
+      }
+      
+      // Permitir Enter para guardar
+      if (e.key === 'Enter') {
+        e.preventDefault(); // Previene submit del form padre
+        e.stopPropagation(); // Evita que dnd-kit capture el evento
+        onSave(); // Ejecuta el guardado
+        return;
+      }
+    }
+  };
+
   // Estilo del cursor
   const cursorStyle = isDragging ? 'grabbing' : isEditing ? 'text' : 'grab';
 
@@ -59,6 +79,7 @@ export const CategoryTitle: React.FC<CategoryTitleProps> = ({
           onFocus={handleFocus}
           onBlur={handleBlur}
           onClick={handleClick}
+          onKeyDown={handleKeyDown} // 👈 NUEVO: Manejador de teclas
           className={`
             w-full min-w-0 px-2 py-1.5 
             font-semibold text-slate-700 
